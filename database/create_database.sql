@@ -115,7 +115,7 @@ VALUES  ('Electronics', 'Explore the latest gadgets and electronic devices.'),
 -- electronics
 INSERT INTO products (name, price, category_id, description, image_url, stock, featured, color) 
 VALUES  ('Smartphone', 499.99, 1, 'A powerful and feature-rich smartphone for all your communication needs.', 'smartphone.jpg', 50, 0, 'Black'),
-        ('Laptop', 899.99, 1, 'A high-performance laptop for work and entertainment.', 'laptop.jpg', 30, 0, 'Gray'),
+        ('Laptop', 999.99, 1, 'A high-performance gaming laptop.', 'laptop.jpg', 30, 0, 'Gray'),
         ('Headphones', 99.99, 1, 'Immerse yourself in music with these high-quality headphones.', 'headphones.jpg', 100, 1, 'White'),
         ('Smart TV', 1499.99, 1, 'Experience stunning visuals and smart features with this advanced television.', 'smart-tv.jpg', 20, 0, 'Black'),
         ('Digital Camera', 599.99, 1, 'Capture life''s precious moments with this professional-grade digital camera.', 'camera.jpg', 15, 1, 'Silver'),
@@ -200,19 +200,13 @@ VALUES  ('Cookware Set', 149.99, 3, 'A comprehensive set of high-quality cookwar
         ('Serving Tray', 19.99, 3, 'Serve your favorite dishes and snacks with style using this elegant serving tray.', 'serving-tray.jpg', 50, 0, 'Tan'),
         ('Spice Rack', 24.99, 3, 'Organize and display your spices with this convenient and space-saving spice rack.', 'spice-rack.jpg', 30, 1, 'White'),
         ('Kitchen Scale', 14.99, 3, 'Accurately measure ingredients for your recipes with this reliable kitchen scale.', 'kitchen-scale.jpg', 25, 0, 'Silver'),
-        ('Tea Kettle', 29.99, 3, 'Brew a perfect cup of tea with this classic and durable tea kettle.', 'tea-kettle.jpg', 50, 1, 'White'),
+        ('Tea Kettle', 29.99, 3, 'Brew a perfect cup of tea with this classic tea kettle.', 'tea-kettle.jpg', 50, 1, 'White'),
         ('Wine Glasses', 29.99, 3, 'Sip and savor your favorite wines with these elegant wine glasses.', 'wine-glasses.jpg', 15, 1, 'Clear'),
         ('Dish Rack', 34.99, 3, 'Dry and organize your dishes with this practical and space-saving dish rack.', 'dish-rack.jpg', 25, 0, 'Gray'),
         ('Apron', 19.99, 3, 'Protect your clothes while cooking with this stylish and functional apron.', 'apron.jpg', 35, 0, 'White'),
         ('Kitchen Timer', 9.99, 3, 'Keep track of cooking times with this handy and easy-to-use kitchen timer.', 'kitchen-timer.jpg', 100, 0, 'White'),
         ('Mixing Bowls Set', 29.99, 3, 'A set of versatile and durable mixing bowls for all your culinary creations.', 'mixing-bowls.jpg', 30, 1, 'Silver'),
         ('Measuring Cup Set', 14.99, 3, 'Accurately measure ingredients with this set of handy and stackable measuring cups.', 'measuring-cups.jpg', 50, 1, 'Green');
-
--- sample duplicates from "bug"
-INSERT INTO products (name, price, category_id, description, image_url, stock, featured, color)
-VALUES  ('Laptop', 999.99, 1, 'A high-performance laptop for work and entertainment.', 'laptop.jpg', 30, 0, 'Gray'),
-        ('Laptop', 999.99, 1, 'A high-performance gaming laptop.', 'laptop.jpg', 30, 0, 'Gray'),
-        ('Tea Kettle', 29.99, 3, 'Brew a perfect cup of tea with this classic tea kettle.', 'tea-kettle.jpg', 50, 1, 'White');
 
 -- add shopping cart items
 INSERT INTO shopping_cart (user_id, product_id, quantity)
