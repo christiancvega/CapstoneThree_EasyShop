@@ -26,14 +26,14 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
         String sql = "SELECT * FROM products " +
                 "WHERE (category_id = ? OR ? = -1) " +
                 "   AND (price >= ? OR ? = -1) " +
-                "   AND (price <= ? OR ? = 1501) " +
+                "   AND (price <= ? OR ? = -1) " +
                 "   AND (color = ? OR ? = '') " +
                 "   AND (name = ? OR ? = '') ";
 
         name = name == null? "": name.trim().toLowerCase();
         categoryId = categoryId == null ? -1 : categoryId;
         minPrice = minPrice == null ? new BigDecimal("-1") : minPrice;
-        maxPrice = maxPrice == null ? new BigDecimal("1500") : maxPrice;
+        maxPrice = maxPrice == null ? new BigDecimal("-1") : maxPrice;
         color = color == null ? "" : color.trim().toLowerCase();
 
         try (Connection connection = getConnection())
@@ -141,14 +141,14 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
             int rowsAffected = statement.executeUpdate();
 
             if (rowsAffected > 0) {
-
+                // Retrieve the generated keys
                 ResultSet generatedKeys = statement.getGeneratedKeys();
 
                 if (generatedKeys.next()) {
-
+                    // Retrieve the auto-incremented ID
                     int orderId = generatedKeys.getInt(1);
 
-
+                    // get the newly inserted category
                     return getById(orderId);
                 }
             }
@@ -230,4 +230,3 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
         return new Product(productId, name, price, categoryId, description, color, stock, isFeatured, imageUrl);
     }
 }
-
