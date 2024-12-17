@@ -14,7 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Component
-public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDao{
+public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDao {
 
     @Autowired
     public MySqlShoppingCartDao(DataSource dataSource) {
@@ -35,7 +35,7 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, userId);
             ResultSet row = statement.executeQuery();
-            while(row.next()) {
+            while (row.next()) {
                 int quantity = row.getInt("quantity");
                 Product product = new Product();
                 product.setProductId(row.getInt("products.product_id"));
@@ -80,9 +80,9 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
     }
 
     @Override
-    public void updateQuantity(int userId,int productId, ShoppingCartItem shoppingCartItem) {
+    public void updateQuantity(int userId, int productId, ShoppingCartItem shoppingCartItem) {
         String query = "UPDATE shopping_cart SET quantity = ? WHERE user_id = ? AND product_id = ?";
-        try(Connection connection = this.getConnection()){
+        try (Connection connection = this.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, shoppingCartItem.getQuantity());
             statement.setInt(2, userId);
@@ -98,7 +98,7 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
     @Override
     public ShoppingCart emptyCart(int userId) {
         String sql = "DELETE FROM shopping_cart WHERE user_id = ?";
-        try(Connection connection = this.getConnection()){
+        try (Connection connection = this.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, userId);
             statement.executeUpdate();
