@@ -37,21 +37,32 @@ public class JWTFilter extends GenericFilterBean {
         String jwt = resolveToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
 
-        if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-            Authentication authentication = tokenProvider.getAuthentication(jwt);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            LOG.debug("set Authentication to custom security context for '{}', uri: {}", authentication.getName(), requestURI);
+        if (StringUtils.hasText(jwt)) {
+            if (tokenProvider.validateToken(jwt)) {
+                Authentication authentication = tokenProvider.getAuthentication(jwt);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                LOG.debug("set Authentication to custom security context for '{}', uri: {}", authentication.getName(), requestURI);
+            } else {
+                LOG.error("Invalid JWT token, URI: {}", requestURI);
+            }
         } else {
-            LOG.debug("no valid JWT token found, uri: {}", requestURI);
+            LOG.debug("No JWT token found in the request header, URI: {}", requestURI);
         }
 
+        // Continue with the request processing
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
+    /**
+     * Extracts the JWT token from the Authorization header.
+     *
+     * @param request The HTTP request.
+     * @return The JWT token if present, otherwise null.
+     */
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+            return bearerToken.substring(7); // Remove "Bearer " prefix to get the token
         }
         return null;
     }

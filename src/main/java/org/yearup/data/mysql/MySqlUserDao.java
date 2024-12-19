@@ -84,9 +84,7 @@ public class MySqlUserDao extends MySqlDaoBase implements UserDao {
 
     @Override
     public User getByUserName(String username) {
-        String sql = "SELECT * " +
-                " FROM users " +
-                " WHERE username = ?";
+        String sql = "SELECT * FROM users WHERE username = ?";
 
         try (Connection connection = getConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -94,12 +92,11 @@ public class MySqlUserDao extends MySqlDaoBase implements UserDao {
 
             ResultSet row = statement.executeQuery();
             if (row.next()) {
-
                 User user = mapRow(row);
                 return user;
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("Error fetching user: " + e.getMessage());
         }
 
         return null;

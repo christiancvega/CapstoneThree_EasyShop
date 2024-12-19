@@ -23,8 +23,7 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 @Component
-public class TokenProvider implements InitializingBean
-{
+public class TokenProvider implements InitializingBean {
 
     private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
 
@@ -35,30 +34,34 @@ public class TokenProvider implements InitializingBean
 
     private Key key;
 
-
     public TokenProvider(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.token-timeout-seconds}") long tokenTimeoutSeconds)
-    {
+            @Value("${jwt.token-timeout-seconds}") long tokenTimeoutSeconds) {
         this.secret = secret;
         this.tokenTimeout = tokenTimeoutSeconds * 1000;
     }
 
     @Override
-    public void afterPropertiesSet()
-    {
+    public void afterPropertiesSet() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createToken(Authentication authentication, boolean rememberMe)
-    {
+    /**
+     * Create a JWT token for the provided authentication object.
+     *
+     * @param authentication The authentication object.
+     * @param rememberMe     A flag to determine whether the token should have a long expiration time.
+     * @return The generated JWT token.
+     */
+    public String createToken(Authentication authentication, boolean rememberMe) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
         long now = (new Date()).getTime();
-        Date expirationDate = new Date(now + this.tokenTimeout);
+        long expirationTime = rememberMe ? tokenTimeout * 2 : tokenTimeout;  // Apply longer timeout if "remember me"
+        Date expirationDate = new Date(now + expirationTime);
 
         return Jwts.builder()
                 .setSubject(authentication.getName())
@@ -68,8 +71,13 @@ public class TokenProvider implements InitializingBean
                 .compact();
     }
 
-    public Authentication getAuthentication(String token)
-    {
+    /**
+     * Extracts authentication from the provided token.
+     *
+     * @param token The JWT token.
+     * @return The authentication object.
+     */
+    public Authentication getAuthentication(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -86,17 +94,19 @@ public class TokenProvider implements InitializingBean
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
-    public boolean validateToken(String authToken)
-    {
-        try
-        {
+    /**
+     * Validates the JWT token.
+     *
+     * @param authToken The token to validate.
+     * @return Whether the token is valid or not.
+     */
+    public boolean validateToken(String authToken) {
+        try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken);
             return true;
-        }
-        catch (Exception e)
-        {
-            logger.info("Token Invalid.");
-            logger.trace("Token Invalid trace: {}.", e.toString());
+        } catch (Exception e) {
+            logger.error("Invalid JWT token: {}", e.getMessage());
+            logger.trace("Token validation error: ", e);  // More detailed exception stack trace
         }
         return false;
     }

@@ -36,18 +36,16 @@ public class ShoppingCartController {
     @PreAuthorize("isAuthenticated()")
     public ShoppingCart getCart(Principal principal) {
         try {
+
             String userName = principal.getName();
+
             User user = userDao.getByUserName(userName);
-            if (user == null) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found.");
-            }
             int userId = user.getId();
-            ShoppingCart cart = shoppingCartDao.getByUserId(userId);
-            if (cart == null) {
-                cart = new ShoppingCart();
-            }
-            return cart;
+
+
+            return shoppingCartDao.getByUserId(userId);
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
     }
